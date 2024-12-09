@@ -63,7 +63,7 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
                             <td>%s</td>
                             <td>%s</td>
                             <td>%s</td>
-                            <td class='td-color' data-id='%s' data-nome='%s' data-blue='%s' data-green='%s' data-yellow='%s' data-red='%s'>
+                            <td class='td-color' data-id='%s' data-name='%s' data-blue='%s' data-green='%s' data-yellow='%s' data-red='%s'>
                                 <div id='color_blue' class='colors' data-isset='%s' style='display:%s;'></div>
                                 <div id='color_green' class='colors' data-isset='%s' style='display:%s;'></div>
                                 <div id='color_yellow' class='colors' data-isset='%s'style='display:%s;'></div>
@@ -76,10 +76,15 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
                         </tr>",
                         $user->id, $user->name, $user->email,
                         $user->id,$user->name,
-                        filter_var($user->blue, FILTER_VALIDATE_BOOLEAN),
-                        filter_var($user->green, FILTER_VALIDATE_BOOLEAN),
-                        filter_var($user->yellow, FILTER_VALIDATE_BOOLEAN),
-                        filter_var($user->red, FILTER_VALIDATE_BOOLEAN),
+                        $user->blue,
+                        $user->green,
+                        $user->yellow,
+                        $user->red,
+
+                        // filter_var($user->blue, FILTER_VALIDATE_BOOLEAN),
+                        // filter_var($user->green, FILTER_VALIDATE_BOOLEAN),
+                        // filter_var($user->yellow, FILTER_VALIDATE_BOOLEAN),
+                        // filter_var($user->red, FILTER_VALIDATE_BOOLEAN),
                         $user->blue, filter_var($user->blue, FILTER_VALIDATE_BOOLEAN) ? "block" : "none",
                         $user->green, filter_var($user->green, FILTER_VALIDATE_BOOLEAN) ? "block" : "none",
                         $user->yellow, filter_var($user->yellow, FILTER_VALIDATE_BOOLEAN) ? "block" : "none",
@@ -198,19 +203,22 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
     <!-- POP UP DE CORES -->
     <div class="popup-overlay" id="popup-colors">
         <div class="popup-content">
-            <form action="update_user.php" method="post">
+            <form action="update_color_user.php" method="post" class="form">
                 <h2>Cores do Usuário</h2>
                 <input type="hidden" id="color-user-id" name="id">
+                <input type="hidden" id="hidden-blue" name="blue">
+                <input type="hidden" id="hidden-green" name="green">
+                <input type="hidden" id="hidden-yellow" name="yellow">
+                <input type="hidden" id="hidden-red" name="red">
                 <p id="color-message"></p>
-                <!-- <input type="text" id="color-user-name" name="name" placeholder="Nome"> -->
                 <div>
-                    <button type="button" class="color-button" id="blue-button"></button>
-                    <button type="button" class="color-button" id="green-button"></button>
-                    <button type="button" class="color-button" id="yellow-button"></button>
-                    <button type="button" class="color-button" id="red-button"></button>
+                    <button type="button" class="color-button" id="blue-button" data-state="false"></button>
+                    <button type="button" class="color-button" id="green-button" data-state="false"></button>
+                    <button type="button" class="color-button" id="yellow-button" data-state="false"></button>
+                    <button type="button" class="color-button" id="red-button" data-state="false"></button>
                 </div>
                 <div>
-                    <button type="submit">Salvar</button>
+                    <button type="submit" id="envio" >Salvar</button>
                     <button type="button" class="cancel" id="cancel-color-button">Cancelar</button>
                 </div>
             </form>
@@ -219,25 +227,69 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
 
     <!-- Ação do pop up de cores -->
     <script>
+        function updateButtonStyle(button) {
+            const isTrue = button.dataset.state === "true";
+            button.classList.toggle("true", isTrue);
+            button.classList.toggle("false", !isTrue);
+        }
+        
         document.querySelectorAll('.td-color').forEach(button => {
             button.addEventListener('click', (event) => {
                 event.preventDefault();
 
-                const userName = button.dataset.nome;
-                const colorBlue = button.dataset.blue;
-                document.getElementById('color-message').innerText = `Cores do usuário: ${userName} ${colorBlue}`;
+                const userName = button.dataset.name;
+                document.getElementById('color-message').innerText = `Cores do usuário: ${userName}`;
                 document.getElementById('color-user-id').value = button.dataset.id;
-                document.getElementById('blue-button').value = button.dataset.blue;
-                document.getElementById('green-button').value = button.dataset.green;
-                document.getElementById('yellow-button').value = button.dataset.yellow;
-                document.getElementById('red-button').value = button.dataset.red;
+
+                const blueButton = document.getElementById('blue-button');
+                const greenButton = document.getElementById('green-button');
+                const yellowButton = document.getElementById('yellow-button');
+                const redButton = document.getElementById('red-button');
+
+                blueButton.dataset.state = button.dataset.blue === "true" ? "true" : "false";
+                greenButton.dataset.state = button.dataset.green === "true" ? "true" : "false";
+                yellowButton.dataset.state = button.dataset.yellow === "true" ? "true" : "false";
+                redButton.dataset.state = button.dataset.red === "true" ? "true" : "false";
+
+                updateButtonStyle(blueButton);
+                updateButtonStyle(greenButton);
+                updateButtonStyle(yellowButton);
+                updateButtonStyle(redButton);
 
                 document.getElementById('popup-colors').style.display = 'flex';
             });
         });
 
+        document.querySelector('.form').addEventListener('submit', (event) => {
+            
+            document.getElementById('hidden-blue').value = document.getElementById('blue-button').dataset.state;
+            document.getElementById('hidden-green').value = document.getElementById('green-button').dataset.state;
+            document.getElementById('hidden-yellow').value = document.getElementById('yellow-button').dataset.state;
+            document.getElementById('hidden-red').value = document.getElementById('red-button').dataset.state;
+
+            // document.getElementById('hidden-red').value = true;
+
+            console.log("Campos ocultos atualizados:");
+            console.log("hidden-blue:", document.getElementById('hidden-blue').value);
+            console.log("hidden-green:", document.getElementById('hidden-green').value);
+            console.log("hidden-yellow:", document.getElementById('hidden-yellow').value);
+            console.log("hidden-red:", document.getElementById('hidden-red').value);
+
+        });
+
         document.getElementById('cancel-color-button').addEventListener('click', () => {
             document.getElementById('popup-colors').style.display = 'none';
+        });
+
+        document.querySelectorAll('.color-button').forEach(button => {
+            updateButtonStyle(button);
+
+            button.addEventListener('click', () => {
+                const isTrue = button.dataset.state === "true";
+                button.dataset.state = isTrue ? "false" : "true";
+                console.log(`Button ${button.id} state is now:`, button.dataset.state);
+                updateButtonStyle(button);
+            });
         });
     </script>
 </body>
