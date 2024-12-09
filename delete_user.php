@@ -14,8 +14,12 @@ if (empty($id)) {
 
 try {
     $sql = "DELETE from users WHERE id = :id";
+    $sqlcolor = "DELETE from user_colors where user_id = :user_id";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    $stmt = $pdo->prepare($sqlcolor);
+    $stmt->bindParam(':user_id',$id,PDO::PARAM_INT);
     $stmt->execute();
 
     header("Location: index.php");
