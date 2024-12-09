@@ -45,13 +45,19 @@ $users = $connection->query("SELECT * FROM users");
                             <td>%s</td>
                             <td>%s</td>
                             <td>%s</td>
-                            <td></td>
+                            <td class='td-color' data-id='%s' data-name='%s'>
+                                <div id='color_blue' class='colors' data-isset=''></div>
+                                <div id='color_green' class='colors'></div>
+                                <div id='color_yellow' class='colors'></div>
+                                <div id='color_red' class='colors'></div>
+                            </td>
                             <td>
                                 <a href='#' class='btn-edit' data-id='%s' data-name='%s' data-email='%s'>Editar</a>
                                 <a href='#' class='btn-delete' data-id='%s' data-name='%s' data-email='%s'>Deletar</a>
                             </td>
                         </tr>",
                         $user->id, $user->name, $user->email,
+                        $user->id,$user->name,
                         $user->id, $user->name, $user->email,
                         $user->id, $user->name, $user->email
                     );
@@ -108,7 +114,7 @@ $users = $connection->query("SELECT * FROM users");
                 <h2>Excluir Usuário</h2>
                 <input type="hidden" id="delete-id" name="id">
                 <p id="delete-message"></p>
-                <button type="submit">Salvar</button>
+                <button type="submit">Deletar</button>
                 <button type="button" class="cancel" id="cancel-delete-button">Cancelar</button>
             </form>
         </div>
@@ -163,6 +169,46 @@ $users = $connection->query("SELECT * FROM users");
         });
     </script>
 
+    <!-- POP UP DE CORES -->
+    <div class="popup-overlay" id="popup-colors">
+        <div class="popup-content">
+            <form action="update_user.php" method="post">
+                <h2>Cores do Usuário</h2>
+                <input type="hidden" id="color-user-id" name="id">
+                <p id="color-message"></p>
+                <!-- <input type="text" id="color-user-name" name="name" placeholder="Nome"> -->
+                <div>
+                    <button type="button" class="color-button" id="blue-button"></button>
+                    <button type="button" class="color-button" id="green-button"></button>
+                    <button type="button" class="color-button" id="yellow-button"></button>
+                    <button type="button" class="color-button" id="red-button"></button>
+                </div>
+                <div>
+                    <button type="submit">Salvar</button>
+                    <button type="button" class="cancel" id="cancel-color-button">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Ação do pop up de cores -->
+    <script>
+        document.querySelectorAll('.td-color').forEach(button => {
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                const userName = button.dataset.name;
+                document.getElementById('color-message').innerText = `Cores do usuário: ${userName}`;
+                document.getElementById('color-user-id').value = button.dataset.id;
+
+                document.getElementById('popup-colors').style.display = 'flex';
+            });
+        });
+
+        document.getElementById('cancel-color-button').addEventListener('click', () => {
+            document.getElementById('popup-colors').style.display = 'none';
+        });
+    </script>
 </body>
 </html>
 
