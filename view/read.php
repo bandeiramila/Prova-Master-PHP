@@ -26,7 +26,7 @@
 
     $dao = new UsersDAO_class();
 
-    $lista = $dao -> readUser($id, $name, $email);
+    $lista = $dao -> readUser();
 
     $json = json_encode($lista);
     echo $json;

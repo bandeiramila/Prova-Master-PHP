@@ -1,7 +1,7 @@
 <?php
 class UsersDAO_class
 {
-    public function readUser($id, $name, $email)
+    public function readUser()
     {
         try {
             $connect = new Connection();
@@ -10,7 +10,24 @@ class UsersDAO_class
         }
 
         try {
-            $sql = "SELECT * from users";
+            $sql = "SELECT u.id AS id, u.name AS name, u.email AS email,
+                        CASE 
+                            WHEN EXISTS (SELECT 1 FROM user_colors uc WHERE uc.user_id = u.id AND uc.color_id = 1) THEN 'true'
+                            ELSE 'false'
+                        END AS blue,
+                        CASE 
+                            WHEN EXISTS (SELECT 1 FROM user_colors uc WHERE uc.user_id = u.id AND uc.color_id = 2) THEN 'true'
+                            ELSE 'false'
+                        END AS red,
+                        CASE 
+                            WHEN EXISTS (SELECT 1 FROM user_colors uc WHERE uc.user_id = u.id AND uc.color_id = 3) THEN 'true'
+                            ELSE 'false'
+                        END AS yellow,
+                        CASE 
+                            WHEN EXISTS (SELECT 1 FROM user_colors uc WHERE uc.user_id = u.id AND uc.color_id = 4) THEN 'true'
+                            ELSE 'false'
+                        END AS green
+                    FROM users u ORDER BY u.id;";
             //echo "passou1";
             $p_sql = $connect->query($sql);
             //echo "passou2";

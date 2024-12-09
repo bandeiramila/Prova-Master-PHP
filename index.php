@@ -5,8 +5,27 @@ require 'connection.php';
 $connection = new Connection();
 
 //$connection->query("INSERT INTO users (name, email) values ('ultimo teste', 'teste@email')");
+//$connection->query("insert into user_colors (user_id,color_id) values (3,1)");
 
-$users = $connection->query("SELECT * FROM users");
+$users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email,
+                        CASE 
+                            WHEN EXISTS (SELECT 1 FROM user_colors uc WHERE uc.user_id = u.id AND uc.color_id = 1) THEN 'true'
+                            ELSE 'false'
+                        END AS blue,
+                        CASE 
+                            WHEN EXISTS (SELECT 1 FROM user_colors uc WHERE uc.user_id = u.id AND uc.color_id = 2) THEN 'true'
+                            ELSE 'false'
+                        END AS red,
+                        CASE 
+                            WHEN EXISTS (SELECT 1 FROM user_colors uc WHERE uc.user_id = u.id AND uc.color_id = 3) THEN 'true'
+                            ELSE 'false'
+                        END AS yellow,
+                        CASE 
+                            WHEN EXISTS (SELECT 1 FROM user_colors uc WHERE uc.user_id = u.id AND uc.color_id = 4) THEN 'true'
+                            ELSE 'false'
+                        END AS green
+                    FROM users u ORDER BY u.id;");
+//echo $users;
 ?>
 
 <!DOCTYPE html>
@@ -16,7 +35,6 @@ $users = $connection->query("SELECT * FROM users");
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Usuários</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="crud-container">
@@ -45,11 +63,11 @@ $users = $connection->query("SELECT * FROM users");
                             <td>%s</td>
                             <td>%s</td>
                             <td>%s</td>
-                            <td class='td-color' data-id='%s' data-name='%s'>
-                                <div id='color_blue' class='colors' data-isset=''></div>
-                                <div id='color_green' class='colors'></div>
-                                <div id='color_yellow' class='colors'></div>
-                                <div id='color_red' class='colors'></div>
+                            <td class='td-color' data-id='%s' data-nome='%s' data-blue='%s' data-green='%s' data-yellow='%s' data-red='%s'>
+                                <div id='color_blue' class='colors' data-isset='%s' style='display:%s;'></div>
+                                <div id='color_green' class='colors' data-isset='%s' style='display:%s;'></div>
+                                <div id='color_yellow' class='colors' data-isset='%s'style='display:%s;'></div>
+                                <div id='color_red' class='colors' data-isset='%s' style='display:%s;'></div>
                             </td>
                             <td>
                                 <a href='#' class='btn-edit' data-id='%s' data-name='%s' data-email='%s'>Editar</a>
@@ -58,6 +76,14 @@ $users = $connection->query("SELECT * FROM users");
                         </tr>",
                         $user->id, $user->name, $user->email,
                         $user->id,$user->name,
+                        filter_var($user->blue, FILTER_VALIDATE_BOOLEAN),
+                        filter_var($user->green, FILTER_VALIDATE_BOOLEAN),
+                        filter_var($user->yellow, FILTER_VALIDATE_BOOLEAN),
+                        filter_var($user->red, FILTER_VALIDATE_BOOLEAN),
+                        $user->blue, filter_var($user->blue, FILTER_VALIDATE_BOOLEAN) ? "block" : "none",
+                        $user->green, filter_var($user->green, FILTER_VALIDATE_BOOLEAN) ? "block" : "none",
+                        $user->yellow, filter_var($user->yellow, FILTER_VALIDATE_BOOLEAN) ? "block" : "none",
+                        $user->red, filter_var($user->red, FILTER_VALIDATE_BOOLEAN) ? "block" : "none",
                         $user->id, $user->name, $user->email,
                         $user->id, $user->name, $user->email
                     );
@@ -197,9 +223,14 @@ $users = $connection->query("SELECT * FROM users");
             button.addEventListener('click', (event) => {
                 event.preventDefault();
 
-                const userName = button.dataset.name;
-                document.getElementById('color-message').innerText = `Cores do usuário: ${userName}`;
+                const userName = button.dataset.nome;
+                const colorBlue = button.dataset.blue;
+                document.getElementById('color-message').innerText = `Cores do usuário: ${userName} ${colorBlue}`;
                 document.getElementById('color-user-id').value = button.dataset.id;
+                document.getElementById('blue-button').value = button.dataset.blue;
+                document.getElementById('green-button').value = button.dataset.green;
+                document.getElementById('yellow-button').value = button.dataset.yellow;
+                document.getElementById('red-button').value = button.dataset.red;
 
                 document.getElementById('popup-colors').style.display = 'flex';
             });
