@@ -19,7 +19,7 @@ try {
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
     $stmt = $pdo->prepare($sqlcolor);
-    $stmt->bindParam(':user_id',$id,PDO::PARAM_INT);
+    $stmt->bindParam(':user_id', $id, PDO::PARAM_INT);
     $stmt->execute();
 
     header("Location: index.php");
@@ -27,4 +27,3 @@ try {
 } catch (PDOException $e) {
     die("Erro ao atualizar o registro: " . $e->getMessage());
 }
-?>

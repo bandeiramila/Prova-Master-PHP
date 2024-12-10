@@ -25,4 +25,3 @@ try {
 } catch (PDOException $e) {
     die("Erro ao atualizar o registro: " . $e->getMessage());
 }
-?>

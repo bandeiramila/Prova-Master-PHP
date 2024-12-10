@@ -4,8 +4,7 @@ require 'connection.php';
 
 $connection = new Connection();
 
-//$connection->query("INSERT INTO users (name, email) values ('ultimo teste', 'teste@email')");
-//$connection->query("insert into user_colors (user_id,color_id) values (3,1)");
+
 
 $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email,
                         CASE 
@@ -25,17 +24,19 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
                             ELSE 'false'
                         END AS green
                     FROM users u ORDER BY u.id;");
-//echo $users;
+
 ?>
 
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Usuários</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <div class="crud-container">
         <nav>
@@ -44,8 +45,8 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
 
         <!-- FORMULÁRIO -->
         <section>
-            <?php 
-                echo "<table>
+            <?php
+            echo "<table>
                 <thead>
                     <tr>
                         <th>ID</th>    
@@ -57,9 +58,9 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
                 </thead>
                 <tbody>";
 
-                foreach ($users as $user) {
-                    echo sprintf(
-                        "<tr>
+            foreach ($users as $user) {
+                echo sprintf(
+                    "<tr>
                             <td>%s</td>
                             <td>%s</td>
                             <td>%s</td>
@@ -74,31 +75,37 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
                                 <a href='#' class='btn-delete' data-id='%s' data-name='%s' data-email='%s'>Deletar</a>
                             </td>
                         </tr>",
-                        $user->id, $user->name, $user->email,
-                        $user->id,$user->name,
-                        $user->blue,
-                        $user->green,
-                        $user->yellow,
-                        $user->red,
+                    $user->id,
+                    $user->name,
+                    $user->email,
+                    $user->id,
+                    $user->name,
+                    $user->blue,
+                    $user->green,
+                    $user->yellow,
+                    $user->red,
 
-                        // filter_var($user->blue, FILTER_VALIDATE_BOOLEAN),
-                        // filter_var($user->green, FILTER_VALIDATE_BOOLEAN),
-                        // filter_var($user->yellow, FILTER_VALIDATE_BOOLEAN),
-                        // filter_var($user->red, FILTER_VALIDATE_BOOLEAN),
-                        $user->blue, filter_var($user->blue, FILTER_VALIDATE_BOOLEAN) ? "block" : "none",
-                        $user->green, filter_var($user->green, FILTER_VALIDATE_BOOLEAN) ? "block" : "none",
-                        $user->yellow, filter_var($user->yellow, FILTER_VALIDATE_BOOLEAN) ? "block" : "none",
-                        $user->red, filter_var($user->red, FILTER_VALIDATE_BOOLEAN) ? "block" : "none",
-                        $user->id, $user->name, $user->email,
-                        $user->id, $user->name, $user->email
-                    );
-                }
-                echo "</tbody></table>";
+                    $user->blue,
+                    filter_var($user->blue, FILTER_VALIDATE_BOOLEAN) ? "block" : "none",
+                    $user->green,
+                    filter_var($user->green, FILTER_VALIDATE_BOOLEAN) ? "block" : "none",
+                    $user->yellow,
+                    filter_var($user->yellow, FILTER_VALIDATE_BOOLEAN) ? "block" : "none",
+                    $user->red,
+                    filter_var($user->red, FILTER_VALIDATE_BOOLEAN) ? "block" : "none",
+                    $user->id,
+                    $user->name,
+                    $user->email,
+                    $user->id,
+                    $user->name,
+                    $user->email
+                );
+            }
+            echo "</tbody></table>";
             ?>
-            
+
             <div class="form_new_row">
                 <form action="" method="post">
-                    <!-- <input class="new_user" type="text" id="new_user" name="new_user" required placeholder="Novo Usuário"> -->
                     <button value="send_new_user" class="btn-create">Cadastrar Novo Usuário</button>
                 </form>
             </div>
@@ -181,7 +188,7 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
             </form>
         </div>
     </div>
-        
+
     <!-- Ação do pop up de criar novo usuário -->
     <script>
         document.querySelectorAll('.btn-create').forEach(button => {
@@ -218,7 +225,7 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
                     <button type="button" class="color-button" id="red-button" data-state="false"></button>
                 </div>
                 <div>
-                    <button type="submit" id="envio" >Salvar</button>
+                    <button type="submit" id="envio">Salvar</button>
                     <button type="button" class="cancel" id="cancel-color-button">Cancelar</button>
                 </div>
             </form>
@@ -232,7 +239,7 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
             button.classList.toggle("true", isTrue);
             button.classList.toggle("false", !isTrue);
         }
-        
+
         document.querySelectorAll('.td-color').forEach(button => {
             button.addEventListener('click', (event) => {
                 event.preventDefault();
@@ -261,20 +268,17 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
         });
 
         document.querySelector('.form').addEventListener('submit', (event) => {
-            
+
             document.getElementById('hidden-blue').value = document.getElementById('blue-button').dataset.state;
             document.getElementById('hidden-green').value = document.getElementById('green-button').dataset.state;
             document.getElementById('hidden-yellow').value = document.getElementById('yellow-button').dataset.state;
             document.getElementById('hidden-red').value = document.getElementById('red-button').dataset.state;
-
-            // document.getElementById('hidden-red').value = true;
 
             console.log("Campos ocultos atualizados:");
             console.log("hidden-blue:", document.getElementById('hidden-blue').value);
             console.log("hidden-green:", document.getElementById('hidden-green').value);
             console.log("hidden-yellow:", document.getElementById('hidden-yellow').value);
             console.log("hidden-red:", document.getElementById('hidden-red').value);
-
         });
 
         document.getElementById('cancel-color-button').addEventListener('click', () => {
@@ -293,5 +297,5 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
         });
     </script>
 </body>
-</html>
 
+</html>
