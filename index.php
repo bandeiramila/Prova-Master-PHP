@@ -1,10 +1,6 @@
 <?php
-
 require 'connection.php';
-
 $connection = new Connection();
-
-
 
 $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email,
                         CASE 
@@ -24,8 +20,8 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
                             ELSE 'false'
                         END AS green
                     FROM users u ORDER BY u.id;");
-
 ?>
+<!-- Após a conexão com a DP, é lançada uma QUERY para requisição dos dados antes da inicialização da tela -->
 
 <!DOCTYPE html>
 <html lang="pt">
@@ -45,7 +41,7 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
 
         <!-- FORMULÁRIO -->
         <section>
-            <?php
+            <?php //Trecho em PHP para apresentar dados obtidos da DB na tela.
             echo "<table>
                 <thead>
                     <tr>
@@ -104,7 +100,7 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
             echo "</tbody></table>";
             ?>
 
-            <div class="form_new_row">
+            <div class="form_new_row"> <!-- Botão de cadastrar novo usuário -->
                 <form action="" method="post">
                     <button value="send_new_user" class="btn-create">Cadastrar Novo Usuário</button>
                 </form>
@@ -112,7 +108,7 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
         </section>
     </div>
 
-    <!-- POP UP DE EDIÇÃO -->
+    <!-- ******** POP UP DE EDIÇÃO ******** -->
     <div class="popup-overlay" id="popup-edit">
         <div class="popup-content">
             <form action="update_user.php" method="post">
@@ -126,7 +122,7 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
         </div>
     </div>
 
-    <!-- Ação do pop up de edição -->
+    <!-- Script do pop up de edição -->
     <script>
         document.querySelectorAll('.btn-edit').forEach(button => {
             button.addEventListener('click', (event) => {
@@ -145,7 +141,7 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
         });
     </script>
 
-    <!-- POP UP DE DELETAR -->
+    <!-- ******** POP UP DE DELETAR ******** -->
     <div class="popup-overlay" id="popup-delete">
         <div class="popup-content">
             <form action="delete_user.php" method="post">
@@ -158,7 +154,7 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
         </div>
     </div>
 
-    <!-- Ação do pop up de delete -->
+    <!-- Script do pop up de delete -->
     <script>
         document.querySelectorAll('.btn-delete').forEach(button => {
             button.addEventListener('click', (event) => {
@@ -176,7 +172,7 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
         });
     </script>
 
-    <!-- POP UP DE CADASTRO -->
+    <!-- ******** POP UP DE CADASTRO ******** -->
     <div class="popup-overlay" id="popup-create">
         <div class="popup-content">
             <form action="create_user.php" method="post">
@@ -189,7 +185,7 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
         </div>
     </div>
 
-    <!-- Ação do pop up de criar novo usuário -->
+    <!-- Script do pop up de criar novo usuário -->
     <script>
         document.querySelectorAll('.btn-create').forEach(button => {
             button.addEventListener('click', (event) => {
@@ -207,7 +203,7 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
         });
     </script>
 
-    <!-- POP UP DE CORES -->
+    <!-- ******** POP UP DE CORES ******** -->
     <div class="popup-overlay" id="popup-colors">
         <div class="popup-content">
             <form action="update_color_user.php" method="post" class="form">
@@ -232,7 +228,7 @@ $users = $connection->query("SELECT u.id AS id, u.name AS name, u.email AS email
         </div>
     </div>
 
-    <!-- Ação do pop up de cores -->
+    <!-- Script do pop up de cores -->
     <script>
         function updateButtonStyle(button) {
             const isTrue = button.dataset.state === "true";

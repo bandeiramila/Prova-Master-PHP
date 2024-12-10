@@ -1,4 +1,7 @@
 <?php
+
+// ***** Tem a funcionalidade de conectar ao banco de dados e dar o insert dos dados obtidos no formulário. *****
+
 try {
     $pdo = new PDO('sqlite:database/db.sqlite');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
